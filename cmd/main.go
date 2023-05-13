@@ -67,16 +67,7 @@ app := fiber.New(fiber.Config{
 	  })
 
 	//   !routes
-//   api := app.Group("/api")
-//   v1 := api.Group("/v1")   // /api/v1
-//   v1.Get("/list", handler)             // /api/v1/list
-//   v1.Get("/user", handler)             // /api/v1/user
-
-// 	// v1.Use(users.AuthMiddleware(false))
-//     //routes
-//     v1:=api.Group("/api") //add this
 	routes.TestingIndex(app)
-// 	v1.Get("/testing",routes.TestingIndex(app))
 
 	//   !monitor
     app.Get("/metrics", monitor.New(monitor.Config{Title: "MyService Metrics Page"}))

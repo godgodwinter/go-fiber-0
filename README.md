@@ -4,9 +4,11 @@ setup go lang 23-05-13
 
 
 //hot reload
-nodemon --exec go run main.go
-
 nodemon --exec go run cmd/main.go
+
+
+<!-- nodemon --exec go run main.go -->
+
 # nodemon --exec go run -bind=172.24.112.1:8081 main.go
 
 # !TUTORIAL
