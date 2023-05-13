@@ -1,9 +1,15 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"os"
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -53,8 +59,19 @@ app := fiber.New(fiber.Config{
 	//   !monitor
     app.Get("/metrics", monitor.New(monitor.Config{Title: "MyService Metrics Page"}))
 
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error loading .env file")
+    }
+	strVar :=os.Getenv("APP_PORT")
+	 app_port,err  := strconv.Atoi(strVar);
+	 
+if err != nil {
+    // handle error
+        log.Fatal("Error port tidak ditemukan")
+}
     // Menentukan alamat dan port
-    addr := "0.0.0.0:8003"
+	addr := fmt.Sprintf("0.0.0.0:%d", app_port)
 	
     // Mulai server HTTP
     app.Listen(addr)
