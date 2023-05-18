@@ -15,67 +15,68 @@ import (
 
 func main() {
 
-    err := godotenv.Load()
-    if err != nil {
-        log.Fatal("Error loading .env file")
-    }
-	strVar :=os.Getenv("APP_PORT")
-	 app_port,err  := strconv.Atoi(strVar);
-	 
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	strVar := os.Getenv("APP_PORT")
+	app_port, err := strconv.Atoi(strVar)
+
 	if err != nil {
 		// handle error
-			log.Fatal("Error env port tidak ditemukan")
+		log.Fatal("Error env port tidak ditemukan")
 	}
 
-// !Custom config
-app := fiber.New(fiber.Config{
-    Prefork:       true,
-    CaseSensitive: true,
-    StrictRouting: true,
-    Network: "tcp4",
-    ServerHeader:  "Fiber",
-    AppName: "Test App v1.0.1",
-})
+	// !Custom config
+	app := fiber.New(fiber.Config{
+		Prefork:       true,
+		CaseSensitive: true,
+		StrictRouting: true,
+		Network:       "tcp4",
+		ServerHeader:  "Fiber",
+		AppName:       "Test App v1.0.1",
+	})
 
 	app.Get("/about", func(c *fiber.Ctx) error {
 		return c.SendString("about")
 	})
-	
+
 	type SomeStruct struct {
 		Name string
-		Port  int
-	  }
-	  
-	  app.Get("/", func(c *fiber.Ctx) error {
+		Port int
+	}
+
+	app.Get("/", func(c *fiber.Ctx) error {
 		// Create data struct:
 		data := SomeStruct{
-		  Name: fmt.Sprintf("This is go starter on Server port: %d", app_port),
-		  Port:  app_port,
+			Name: fmt.Sprintf("This is go starter on Server port: %d", app_port),
+			Port: app_port,
 		}
-	  
+
 		return c.JSON(data)
-	  })
-	  
-	  app.Use(recover.New())
+	})
 
-	  app.Get("/err", func(c *fiber.Ctx) error {
-		  panic("This panic is caught by fiber")
-	  })
+	app.Use(recover.New())
 
-	  app.Get("/err2",func(c *fiber.Ctx) error{
+	app.Get("/err", func(c *fiber.Ctx) error {
+		panic("This panic is caught by fiber")
+	})
+
+	app.Get("/err2", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON("errors")
-	  })
+	})
 
 	//   !routes
 	routes.TestingIndex(app)
+	// routes.ExampleRouter(app)
 
 	//   !monitor
-    app.Get("/metrics", monitor.New(monitor.Config{Title: "MyService Metrics Page"}))
+	app.Get("/metrics", monitor.New(monitor.Config{Title: "MyService Metrics Page"}))
 
-    // Menentukan alamat dan port
+	// Menentukan alamat dan port
 	addr := fmt.Sprintf("0.0.0.0:%d", app_port)
-	
-    // Mulai server HTTP
-    app.Listen(addr)
+
+	// Mulai server HTTP
+	app.Listen(addr)
 
 }
